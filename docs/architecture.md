@@ -22,7 +22,7 @@ At a high level:
                               ▼
                        ┌─────────────┐
                        │   Services  │
-                       │ Composition │
+                       │ Composition  │
                        └──────┬──────┘
                               │
                     ┌─────────┴─────────┐
@@ -43,9 +43,11 @@ At a high level:
                                   │ Generator  │
                                   │  (Gemini)  │
                                   └────────────┘
+```
 
 The broader knowledge-processing pipeline is:
 
+```text
 Raw Judgments
       │
       ▼
@@ -68,11 +70,13 @@ Raw Judgments
       │
       ▼
  Generated Answer
+```
 
-## Backend structure
+## Backend Structure
 
 The backend is divided into components based on their responsibility.
 
+```text
 src/
 │
 ├── ingestion/      # Build the knowledge base
@@ -85,14 +89,17 @@ src/
 ├── models/         # Shared data models
 │
 └── config.py       # Global configuration
+```
 
 The application layer sits above these components:
 
+```text
 app/
 ├── main.py         # FastAPI application entry point
 ├── routes.py       # HTTP API routes
 ├── services.py     # Application service composition
 └── schemas.py      # Request/response schemas
+```
 
 # Data Processing Pipeline
 
@@ -102,6 +109,7 @@ CourtSight begins with a collection of legal judgments that must be transformed 
 
 The ingestion layer is responsible for building the knowledge base from the source judgments and associated metadata.
 
+```text
 Raw Judgment Data
         │
         ▼
@@ -109,6 +117,7 @@ Raw Judgment Data
         │
         ▼
      Documents
+```
 
 The ingestion layer is kept separate from retrieval so that document processing does not become coupled to the API or RAG system.
 
@@ -116,6 +125,7 @@ The ingestion layer is kept separate from retrieval so that document processing 
 
 Long judgments are divided into smaller chunks before embedding.
 
+```text
 Document
     │
     ▼
@@ -125,6 +135,7 @@ Chunking
     ├── Chunk 2
     ├── Chunk 3
     └── ...
+```
 
 Chunking exists as an independent component because the retrieval system operates on chunks rather than entire judgments.
 
@@ -134,6 +145,7 @@ The resulting chunks become the units of semantic retrieval.
 
 Each chunk is converted into a numerical vector representation.
 
+```text
 Text Chunk
     │
     ▼
@@ -141,6 +153,7 @@ Sentence Transformer
     │
     ▼
 Embedding Vector
+```
 
 The same embedding mechanism is also used to transform user queries into vectors.
 
@@ -150,6 +163,7 @@ This allows queries and document chunks to be compared within the same vector sp
 
 The generated embeddings are stored and searched using FAISS.
 
+```text
 Chunk Embeddings
        │
        ▼
@@ -157,21 +171,23 @@ Chunk Embeddings
        │
        ▼
 Similarity Search
+```
 
 The vector store is responsible for:
 
-building the vector index
-storing associated embedded chunks
-persisting the index
-loading the index
-performing similarity search
+- Building the vector index
+- Storing associated embedded chunks
+- Persisting the index
+- Loading the index
+- Performing similarity search
 
 The vector-store layer is intentionally isolated from the retrieval layer.
 
-## Retrieval Pipeline
+# Retrieval Pipeline
 
 The retrieval layer coordinates query embedding and vector search.
 
+```text
 User Query
     │
     ▼
@@ -185,17 +201,19 @@ Vector Store
     │
     ▼
 Top-k Results
+```
 
 The retriever therefore acts as the bridge between the user's natural-language query and the vector store.
 
 Keeping this logic separate allows retrieval strategies to evolve independently of the underlying vector database.
 
-## Retrieval-Augmented Generation
+# Retrieval-Augmented Generation
 
 CourtSight uses retrieval-augmented generation rather than sending a user's question directly to a generative model.
 
 The process is:
 
+```text
 User Query
     │
     ▼
@@ -218,6 +236,7 @@ Gemini
     │
     ▼
 Answer
+```
 
 The prompt-building layer takes the retrieved chunks and constructs the context provided to the generative model.
 
@@ -225,39 +244,40 @@ The generator is responsible for interacting with Gemini, while retrieval remain
 
 This separation allows the retrieval system and generative model to be changed independently.
 
-## Application Layer
+# Application Layer
 
-The app/ package exposes CourtSight through an HTTP API.
+The `app/` package exposes CourtSight through an HTTP API.
 
-main.py
+## `main.py`
 
-main.py is the entry point of the backend application.
+`main.py` is the entry point of the backend application.
 
 Its responsibilities include:
 
-creating the FastAPI application
-registering API routers
-configuring middleware
-configuring application lifecycle behavior
-exposing the ASGI application
+- Creating the FastAPI application
+- Registering API routers
+- Configuring middleware
+- Configuring application lifecycle behavior
+- Exposing the ASGI application
 
 The application entry point intentionally contains application configuration rather than business logic.
 
-## routes.py
+## `routes.py`
 
-routes.py defines the HTTP interface exposed by CourtSight.
+`routes.py` defines the HTTP interface exposed by CourtSight.
 
 The routes are responsible for:
 
-receiving HTTP requests
-validating input
-invoking application services
-returning structured responses
+- Receiving HTTP requests
+- Validating input
+- Invoking application services
+- Returning structured responses
 
 Routes are intentionally kept thin.
 
 Business logic is delegated to the service layer rather than being implemented directly inside HTTP handlers.
 
+```text
 HTTP Request
       │
       ▼
@@ -271,20 +291,21 @@ CourtSight Pipeline
       │
       ▼
 HTTP Response
+```
 
-## services.py
+## `services.py`
 
-services.py acts as the composition root of the application.
+`services.py` acts as the composition root of the application.
 
 It assembles the reusable CourtSight components required to process requests.
 
 The service layer coordinates components including:
 
-EmbeddingGenerator
-VectorStore
-Retriever
-PromptBuilder
-Generator
+- `EmbeddingGenerator`
+- `VectorStore`
+- `Retriever`
+- `PromptBuilder`
+- `Generator`
 
 Expensive components such as embedding models and vector stores are intended to be initialized once and reused across requests rather than recreated for every request.
 
@@ -294,6 +315,7 @@ This also provides a clean separation between HTTP handling and application logi
 
 CourtSight deliberately separates responsibilities across layers.
 
+```text
 ┌───────────────────────────────────────────┐
 │              Application Layer            │
 │                                           │
@@ -320,19 +342,21 @@ CourtSight deliberately separates responsibilities across layers.
 │                                           │
 │  Ingestion → Documents → Chunks           │
 └───────────────────────────────────────────┘
+```
 
 This separation provides several advantages:
 
-individual components can be tested independently
-retrieval can evolve without changing the API layer
-the generation model can be replaced without rebuilding the ingestion pipeline
-expensive shared components can be reused across requests
-HTTP concerns remain separate from application and ML logic
+- Individual components can be tested independently
+- Retrieval can evolve without changing the API layer
+- The generation model can be replaced without rebuilding the ingestion pipeline
+- Expensive shared components can be reused across requests
+- HTTP concerns remain separate from application and ML logic
 
 # Design Philosophy
 
 CourtSight is organized around a pipeline of increasingly specialized representations:
 
+```text
 Legal Judgment
       ↓
 Structured Document
@@ -344,6 +368,7 @@ Embedding Vectors
 Retrieved Context
       ↓
 Generated Answer
+```
 
 Each stage has a specific responsibility and exposes a relatively small interface to the next stage.
 

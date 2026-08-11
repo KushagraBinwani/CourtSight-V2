@@ -1,4 +1,3 @@
-from pathlib import Path
 import time
 
 from src.embeddings.embedding_generator import EmbeddingGenerator
@@ -6,9 +5,7 @@ from src.rag.generator import Generator
 from src.rag.prompt_builder import PromptBuilder
 from src.retrieval.retriever import Retriever
 from src.vector_store.vector_store import VectorStore
-
-
-INDEX_DIR = Path("data/index")
+from src.config import INDEX_DIR
 
 
 class CourtSightService:

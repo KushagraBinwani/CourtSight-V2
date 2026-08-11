@@ -1,0 +1,9 @@
+Year,Metadata Complete,PDF Exists,Pages,Words,Characters,Avg Words/Page,Empty Pages,Extraction Complete,Verdict,Error
+1955,True,True,9,3414,19843,379.3,0,True,PASS,
+1965,True,True,12,5497,31676,458.1,0,True,PASS,
+1975,True,True,5,2397,14231,479.4,0,True,PASS,
+1985,True,True,9,3824,22980,424.9,0,True,PASS,
+1995,True,True,8,3317,19613,414.6,0,True,PASS,
+2005,True,True,15,6092,35759,406.1,0,True,PASS,
+2015,True,True,46,13220,78624,287.4,0,True,PASS,
+2025,True,True,12,4529,26647,377.4,0,True,PASS,

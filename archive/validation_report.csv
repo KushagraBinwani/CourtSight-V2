@@ -1,0 +1,9 @@
+Year,Metadata Loaded,PDF Found,PDF Name,Pages,Words,Characters,Empty Pages,Citation Match,Title Match,Verdict,Error
+1955,True,True,1955_1_481_489_EN.pdf,9,3414,19843,0,False,False,FAIL,
+1965,True,True,1965_1_700_711_EN.pdf,12,5497,31676,0,False,False,FAIL,
+1975,True,True,1975_2_806_810_EN.pdf,5,2397,14231,0,False,False,FAIL,
+1985,True,True,1985_1_899_907_EN.pdf,9,3824,22980,0,False,False,FAIL,
+1995,True,True,S_1995_1_484_491_EN.pdf,8,3317,19613,0,False,False,FAIL,
+2005,True,True,2005_3_770_784_EN.pdf,15,6092,35759,0,False,True,FAIL,
+2015,True,True,2015_3_243_286_EN.pdf,46,13220,78624,0,True,False,FAIL,
+2025,True,True,2025_1_81_92_EN.pdf,12,4529,26647,0,True,True,PASS,

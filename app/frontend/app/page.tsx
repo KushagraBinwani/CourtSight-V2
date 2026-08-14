@@ -21,9 +21,12 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post("https://granted-technician-futures-barcelona.trycloudflare.com/query", {
-        query: searchQuery,
-      });
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/query`,
+        {
+          query: searchQuery,
+        }
+      );
 
       setAnswer(data.answer);
       setSources(data.sources);
@@ -60,6 +63,7 @@ export default function Home() {
           onSuggestionClick={handleSuggestionClick}
         />
       </div>
+
       <Footer />
     </main>
   );

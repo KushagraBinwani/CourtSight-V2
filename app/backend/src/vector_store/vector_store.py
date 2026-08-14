@@ -2,6 +2,7 @@ import numpy as np
 import faiss
 import joblib
 
+from src.models.chunk import Chunk
 from src.models.search import SearchResult
 
 
@@ -9,18 +10,19 @@ class VectorStore:
 
     def __init__(self):
         self.index = None
-        self.embedded_chunks = []
+        self.chunks: list[Chunk] = []
 
     def build_index(self, embedded_chunks):
-
-        self.embedded_chunks = embedded_chunks
 
         vectors = [
             embedded.embedding
             for embedded in embedded_chunks
         ]
 
-        vectors = np.array(vectors, dtype=np.float32)
+        vectors = np.array(
+            vectors,
+            dtype=np.float32,
+        )
 
         faiss.normalize_L2(vectors)
 
@@ -30,7 +32,12 @@ class VectorStore:
 
         self.index.add(vectors)
 
-    def save(self, index_path, metadata_path):
+        self.chunks = [
+            embedded.chunk
+            for embedded in embedded_chunks
+        ]
+
+    def save(self, index_path, chunks_path):
 
         faiss.write_index(
             self.index,
@@ -38,18 +45,18 @@ class VectorStore:
         )
 
         joblib.dump(
-            self.embedded_chunks,
-            str(metadata_path),
+            self.chunks,
+            str(chunks_path),
         )
 
-    def load(self, index_path, metadata_path):
+    def load(self, index_path, chunks_path):
 
         self.index = faiss.read_index(
             str(index_path)
         )
 
-        self.embedded_chunks = joblib.load(
-            str(metadata_path)
+        self.chunks = joblib.load(
+            str(chunks_path)
         )
 
     def search(self, query_embedding, k=5):
@@ -73,7 +80,7 @@ class VectorStore:
             results.append(
                 SearchResult(
                     score=float(score),
-                    embedded_chunk=self.embedded_chunks[idx],
+                    chunk=self.chunks[idx],
                 )
             )
 

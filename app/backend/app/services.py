@@ -21,9 +21,10 @@ class CourtSightService:
 
         print("Loading FAISS index...")
         self.vector_store = VectorStore()
+
         self.vector_store.load(
             INDEX_DIR / "faiss.index",
-            INDEX_DIR / "embedded_chunks.pkl",
+            INDEX_DIR / "chunks.pkl",
         )
 
         print("Creating retriever...")
@@ -55,11 +56,17 @@ class CourtSightService:
 
         answer = self.generator.generate(prompt)
 
-        latency = round(time.perf_counter() - start, 2)
+        latency = round(
+            time.perf_counter() - start,
+            2,
+        )
 
         avg_score = (
             round(
-                sum(result.score for result in search_results) / len(search_results),
+                sum(
+                    result.score
+                    for result in search_results
+                ) / len(search_results),
                 4,
             )
             if search_results

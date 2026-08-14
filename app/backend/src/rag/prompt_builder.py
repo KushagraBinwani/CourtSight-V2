@@ -13,7 +13,7 @@ class PromptBuilder:
 
         for i, result in enumerate(results, start=1):
 
-            chunk = result.embedded_chunk.chunk
+            chunk = result.chunk
 
             context += (
                 f"[Document {i}]\n"
@@ -49,7 +49,7 @@ class PromptBuilder:
             - Bold important legal concepts, constitutional provisions, and judge names.
             - Keep paragraphs short (2-4 sentences maximum).
             - If the answer compares multiple judicial views, present them as separate sections.
-            - End with a short **Conclusion** section when appropriate.
+            - Use a short **Conclusion** section when appropriate.
             - Never output HTML.
 
             Context:

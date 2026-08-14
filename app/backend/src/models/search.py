@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.models.embedding import EmbeddedChunk
+from src.models.chunk import Chunk
 
 
 @dataclass
@@ -9,4 +9,4 @@ class SearchResult:
     Represents one retrieved chunk together with its similarity score.
     """
     score: float
-    embedded_chunk: EmbeddedChunk
+    chunk: Chunk

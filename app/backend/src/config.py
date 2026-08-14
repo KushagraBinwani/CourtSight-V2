@@ -17,7 +17,10 @@ PDF_DIR = STORAGE_DIR / "pdf"
 METADATA_DIR = STORAGE_DIR / "metadata"
 PROCESSED_DIR = STORAGE_DIR / "processed"
 EMBEDDINGS_DIR = STORAGE_DIR / "embeddings"
-INDEX_DIR = STORAGE_DIR / "index"
+
+# Backend runtime artifacts
+BACKEND_STORAGE_DIR = BACKEND_DIR / "storage"
+INDEX_DIR = BACKEND_STORAGE_DIR / "index"
 
 # =========================
 # API Keys

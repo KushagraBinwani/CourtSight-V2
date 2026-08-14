@@ -100,7 +100,7 @@ def main():
 
     vector_store.save(
         INDEX_DIR / "faiss.index",
-        INDEX_DIR / "embedded_chunks.pkl",
+        INDEX_DIR / "chunks.pkl",
     )
 
     print("\n" + "=" * 80)

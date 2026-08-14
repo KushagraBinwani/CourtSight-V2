@@ -5,6 +5,7 @@ from app.schemas import (
     QueryResponse,
     Source,
 )
+
 from app.services import courtsight
 
 
@@ -27,7 +28,7 @@ def query(
 
     for result in response["results"]:
 
-        chunk = result.embedded_chunk.chunk
+        chunk = result.chunk
 
         preview = (
             chunk.text[:300] + "..."
